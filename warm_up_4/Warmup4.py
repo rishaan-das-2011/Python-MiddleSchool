@@ -1,45 +1,40 @@
 """
-LESSON: 5.2 - Spritesheets
+LESSON: 5.1 - Sprites
 WARMUP 4
 """
-
 import pygame
 import tsk
 pygame.init()
 
 window = pygame.display.set_mode([1018, 573])
-c = pygame.time.Clock()
+c = pygame.time.Clock() 
 
-background = tsk.Sprite("OpenMeadow.jpg", 0, 0)
-sleep = tsk.ImageSheet("HedgehogSleep.png", 5, 6)
-run = tsk.ImageSheet("HedgehogRun.png", 5, 6)
+background = tsk.Sprite("LakeWithBushes.jpg", 0, 0)
+bee = tsk.Sprite("Bee.png", 300, 200)
 
-hedgehog = tsk.Sprite(run, 300, 200)
+timer = 0
+bee_speed = 5
 
 drawing = True
 while drawing:
-
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             drawing = False
 
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            print("Switching")
+    timer += c.get_time()
+    if timer > 2000:
+        timer = 0
 
-            # Switch between the image sheets
-
-            hedgehog.image = sleep
-            
-        if event.type == pygame.MOUSEBUTTONUP:
-            print("Switching")
-            hedgehog.image = run
+        # Flip bee and change and bee_speed here
+        bee.flip_x = not bee.flip_x
+        bee_speed *= -1
+    
 
 
+    bee.x += bee_speed
 
-
-    hedgehog.update(c.get_time())
     background.draw()
-    hedgehog.draw()
-
+    bee.draw()
     pygame.display.flip()
+
     c.tick(30)
