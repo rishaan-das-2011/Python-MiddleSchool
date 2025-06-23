@@ -1,55 +1,45 @@
 """
-LESSON: 6.1 - Functions
+LESSON: 5.2 - Spritesheets
 WARMUP 4
 """
 
-import random
+import pygame
+import tsk
+pygame.init()
 
-#### ------------------------------- ####
-#### ---- PRINT ANIMAL FUNCTION ---- ####
-#### ------------------------------- ####
-def animal_name():
-    animals = ["frog", "dog", "horse", "chicken"]
-    print(random.choice(animals))
+window = pygame.display.set_mode([1018, 573])
+c = pygame.time.Clock()
+
+background = tsk.Sprite("OpenMeadow.jpg", 0, 0)
+sleep = tsk.ImageSheet("HedgehogSleep.png", 5, 6)
+run = tsk.ImageSheet("HedgehogRun.png", 5, 6)
+
+hedgehog = tsk.Sprite(run, 300, 200)
+
+drawing = True
+while drawing:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            drawing = False
+
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            print("Switching")
+
+            # Switch between the image sheets
+
+            hedgehog.image = sleep
+            
+        if event.type == pygame.MOUSEBUTTONUP:
+            print("Switching")
+            hedgehog.image = run
 
 
 
 
+    hedgehog.update(c.get_time())
+    background.draw()
+    hedgehog.draw()
 
-#### ------------------------------ ####
-#### ---- PRINT NOISE FUNCTION ---- ####
-#### ------------------------------ ####
-
-def animal_sound():
-    sounds = ["Moo", "Ruff", "Meow", "Quack", "Oof"]
-    print(random.choice(sounds))
-
-
-
-
-#### ---------------------- ####
-#### ---- MAIN PROGRAM ---- ####
-#### ---------------------- ####
-
-q = ""
-
-# Main loop
-while q != "quit":
-
-    print("The most popular animal on our farm is our: ")
-
-    # Call the print animal function here
-
-    animal_name()
-
-    print()
-
-    print("People come from everywhere to hear it say: ")
-
-    # Call the print noise function here
-
-    animal_sound()
-
-    print()
-    q = input("(Enter or type quit) ")
-    print()
+    pygame.display.flip()
+    c.tick(30)

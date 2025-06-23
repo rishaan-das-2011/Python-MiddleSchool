@@ -1,87 +1,46 @@
 """
-LESSON: 6.3 - Complex Parameters
+LESSON: 5.2 - Sprite Sheet Animation
 WARMUP 3
 """
-
-#### ---- LIBRARIES ---- ####
-import random
-import tsk
 import pygame
+import tsk
+import random
 pygame.init()
 
-
-#### ------------------------------- ####
-#### ---- MOVE SPRITES FUNCTION ---- ####
-#### ------------------------------- ####
-def move_sprites(sprite_list, old_mouse, new_mouse):
-
-    # Get position of clicks
-    old_x, old_y = old_mouse
-    x, y = new_mouse
-
-    # Get the difference between new and old positions
-    x_diff = x - old_x
-    y_diff = y - old_y
-
-    # Move each sprite based on the difference
-    
-    for sprite in sprite_list:
-        sprite.center_x += x_diff
-        sprite.center_y += y_diff
-
-
-#### ---------------------- ####
-#### ---- MAIN PROGRAM ---- ####
-#### ---------------------- ####
-# Setup
-w = pygame.display.set_mode([1018, 573])
+window = pygame.display.set_mode([1018, 573])
 c = pygame.time.Clock()
 
-# Sprites
-background = tsk.Sprite("CatRoom.jpg", 0, 0)
-box = tsk.Sprite("CatBox.png", 0, 0)
-box.center = (0, 0)
-cats = []
+background = tsk.Sprite("LakeWithBushes.jpg", 0, 0)
+run_sheet = tsk.ImageSheet("HedgehogRun.png", 5, 6)
+hedgehog = tsk.Sprite(run_sheet, 300, 200)
+hedgehog.image_animation_rate = 30
 
-# Left cats
-for i in range(5):
-    cat = tsk.Sprite("BoredCat.png", random.randint(-500, -300), random.randint(-200, 50))
-    cats.append(cat)
+timer = 0
+time_up = 2000
+running = True
 
-# Right cats
-for i in range(5):
-    cat = tsk.Sprite("BoredCat.png", random.randint(50, 300), random.randint(-200, 50))
-    cat.flip_x = True
-    cats.append(cat)
-
-
-# Click variables
-old_click = (0, 0)
-click = (0, 0)
-
-
-#### ---- MAIN LOOP ---- ####
 drawing = True
 while drawing:
-
-    # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             drawing = False
 
-        # Move cats on click
-        if event.type == pygame.MOUSEBUTTONDOWN:
-            old_click = click
-            click = pygame.mouse.get_pos()
-            box.center = click
-            move_sprites(cats, old_click, click)
+    timer += c.get_time()
+    if timer > time_up:
+        timer = 0
+        time_up = random.randint(1500, 3000)
+        running = not running
 
-    # Draw
+        hedgehog.image_animation_rate = 30 if running else 0
+
+
     background.draw()
-    box.draw()
-    for cat in cats:
-        cat.draw()
 
-    # Finish
+    # Update and draw the hedgehog
+    hedgehog.update(c.get_time())
+    hedgehog.draw()
+
+
+
     pygame.display.flip()
     c.tick(30)

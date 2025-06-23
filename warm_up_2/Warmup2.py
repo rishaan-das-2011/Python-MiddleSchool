@@ -1,76 +1,35 @@
 """
-LESSON: 6.3 - Complex Parameters
+LESSON: 5.2 - Sprite Sheet Animation
 WARMUP 2
 """
-
-#### ---- LIBRARIES ---- ####
-import random
-import tsk
 import pygame
+import tsk
 pygame.init()
 
-
-#### -------------------------------- ####
-#### ---- REMOVE CLOUDS FUNCTION ---- ####
-#### -------------------------------- ####
-def remove_clouds(cloud_list):
-    old_clouds = []
-
-    # Mark clouds for removal
-
-
-    for cloud in cloud_list:
-        if cloud.center_y > 400:
-            old_clouds.append(cloud)
-
-
-    # Remove clouds from cloud_list
-
-    for cloud in old_clouds:
-        cloud_list.remove(cloud)
-
-#### ---------------------- ####
-#### ---- MAIN PROGRAM ---- ####
-#### ---------------------- ####
-# Setup
-w = pygame.display.set_mode([1018, 573])
+window = pygame.display.set_mode([1018, 573])
 c = pygame.time.Clock()
 
-# Sprites
-background = tsk.Sprite("SkyMountains.jpg", 0, 0)
-clouds = []
+background = tsk.Sprite("LakeSideView.jpg", 0, 0)
 
-cloud_timer = 1000
+# Declare the image sheet and sprite here
+
+puffin_sheet = tsk.ImageSheet("PuffinSwim.png", 5, 6)  
+puffin = tsk.Sprite(puffin_sheet, 300, 400)
+puffin.image_animation_rate = 30
 
 
-#### ---- MAIN LOOP ---- ####
 drawing = True
 while drawing:
-
-    # Event loop
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             drawing = False
 
-    # Make new clouds
-    if cloud_timer <= 0:
-        new_cloud = tsk.Sprite("Cloud2.png", random.randint(0, 850), -100)
-        clouds.append(new_cloud)
-        cloud_timer = 1000
-
-    # Move clouds
-    for cloud in clouds:
-        cloud.y += .07 * c.get_time()
-
-    # Remove old clouds
-    remove_clouds(clouds)
-
-    # Draw
     background.draw()
-    for cloud in clouds:
-        cloud.draw()
 
-    # Finish
+    # Update and draw the sprite here
+    puffin.update(c.get_time())
+    puffin.draw()
+
+
     pygame.display.flip()
     c.tick(30)
-    cloud_timer -= c.get_time()

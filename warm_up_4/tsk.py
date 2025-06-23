@@ -36,7 +36,7 @@ except ImportError:
 
 if TYPE_CHECKING:
     from types import ModuleType
-    from typing import Dict, List, Type, Union
+    from typing import Dict, List, Type, TypeVar, Union
 
 
 # Support Python 2.7 or 3.x
@@ -75,7 +75,11 @@ def input_number(prompt):
     try:
         return int(value)
     except ValueError:
-        return float(value)
+        try:
+            return float(value)
+        except ValueError as e:
+            _from_none(e)
+            raise
 
 
 # ------------------------------------------------------------------------------
@@ -1471,10 +1475,11 @@ class sky(object):
             try:
                 return getattr(sky.sprites, sprite_instance_name)
             except NameError:
-                raise NameError(
+                raise _from_none(NameError(
                     ('Method %r references sprite instance %r '
                      'not defined in the current scene.') % 
-                    (event_handler.__name__, sprite_instance_name))
+                    (event_handler.__name__, sprite_instance_name)
+                ))
         else:
             raise NameError(
                 'Method %r references invalid sprite: %r' % 
@@ -1554,7 +1559,27 @@ class _Handler(object):
 
 
 # ------------------------------------------------------------------------------
-# Internal Utility
+# Internal: raise e from None
+
+if TYPE_CHECKING:
+    _BE = TypeVar('_BE', bound=BaseException)
+
+
+def _from_none(e):
+    # type: (_BE) -> _BE
+    """
+    Emulates the effect of `raise e from None` in both Python 3.x and 2.7.
+    
+    Example:
+        raise _from_none(e)
+    """
+    e.__cause__ = None
+    e.__suppress_context__ = True
+    return e
+
+
+# ------------------------------------------------------------------------------
+# Internal: functools.partial
 
 # Same as functools.partial(), but avoids importing the functools module.
 def _functools_partial(func, *args, **kwargs):

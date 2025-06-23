@@ -1,32 +1,55 @@
 """
-LESSON: 6.3 - Complex Parameters
+LESSON: 5.2 - Spritesheets
 WARMUP 5
 """
 
-#### --------------------------- ####
-#### ---- GREETING FUNCTION ---- ####
-#### --------------------------- ####
+import pygame
+import tsk
+pygame.init()
 
-# Write a function that greets the user
+window = pygame.display.set_mode([1018, 573])
+c = pygame.time.Clock()
 
-def get_greeting(name = "pal"):
-    print("Hello, " + name + "! ")
+background = tsk.Sprite("FantasyPlains.jpg", 0, 0)
+gem = tsk.Sprite("RoundGemPink.png", 500, 300)
+
+sheet = tsk.ImageSheet("WizardWalking.png", 4, 6)
+wiz1 = tsk.Sprite(sheet, 0, 150)
+wiz2 = tsk.Sprite(sheet, 700, 150)
+wiz2.flip_x = True
+
+gem_speed = .5
+
+drawing = True
+while drawing:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            drawing = False
+
+    gem.x += gem_speed * c.get_time()
+    if gem.center_x <= wiz1.center_x:
+        gem_speed = .5
+    elif gem.center_x >= wiz2.center_x:
+        gem_speed = -.5
+
+    # Animate the wizard closest to the gem
+
+    if gem.center_x < 509: 
+        wiz1.image_animation_rate = 30
+        wiz2.image_animation_rate = 0
+
+    else:
+        wiz1.image_animation_rate = 0
+        wiz2.image_animation_rate = 30
 
 
-#### ---------------------- ####
-#### ---- MAIN PROGRAM ---- ####
-#### ---------------------- ####
-answer = input("Do you wish to enter a name? y/n ")
+    wiz1.update(c.get_time())
+    wiz2.update(c.get_time())
+    background.draw()
+    wiz1.draw()
+    wiz2.draw()
+    gem.draw()
 
-if answer == "y":
-    user_name = input("Enter your name: ")
-
-    # Call the function with the user's name
-
-    get_greeting(user_name)
-
-# Otherwise, call the function and let it use its
-# default value
-
-else: 
-    get_greeting()
+    pygame.display.flip()
+    c.tick(30)

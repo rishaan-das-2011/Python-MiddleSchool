@@ -1,23 +1,17 @@
 """
 LESSON: 5.2 - Sprite Sheet Animation
-WARMUP 3
+INSTRUCTION 1
 """
 import pygame
 import tsk
-import random
 pygame.init()
 
 window = pygame.display.set_mode([1018, 573])
 c = pygame.time.Clock()
 
-background = tsk.Sprite("LakeWithBushes.jpg", 0, 0)
+background = tsk.Sprite("Hills.jpg", 0, 0)
 run_sheet = tsk.ImageSheet("HedgehogRun.png", 5, 6)
-hedgehog = tsk.Sprite(run_sheet, 300, 200)
-hedgehog.image_animation_rate = 30
-
-timer = 0
-time_up = 2000
-running = True
+hedgehog = tsk.Sprite(run_sheet, 100, 200)
 
 drawing = True
 while drawing:
@@ -25,22 +19,14 @@ while drawing:
         if event.type == pygame.QUIT:
             drawing = False
 
-    timer += c.get_time()
-    if timer > time_up:
-        timer = 0
-        time_up = random.randint(1500, 3000)
-        running = not running
+    # Make the hedgehog follow the mouse
+    x, y = pygame.mouse.get_pos()
+    hedgehog.center = (x, y)
 
-        hedgehog.image_animation_rate = 30 if running else 0
-
-
+    # Draw the background and hedgehog
     background.draw()
-
-    # Update and draw the hedgehog
     hedgehog.update(c.get_time())
     hedgehog.draw()
-
-
 
     pygame.display.flip()
     c.tick(30)
