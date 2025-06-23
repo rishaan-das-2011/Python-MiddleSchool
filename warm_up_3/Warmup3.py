@@ -1,23 +1,14 @@
 """
-LESSON: 5.2 - Sprite Sheet Animation
+LESSON: 5.1 - Sprites
 WARMUP 3
 """
 import pygame
 import tsk
-import random
 pygame.init()
 
 window = pygame.display.set_mode([1018, 573])
-c = pygame.time.Clock()
-
-background = tsk.Sprite("LakeWithBushes.jpg", 0, 0)
-run_sheet = tsk.ImageSheet("HedgehogRun.png", 5, 6)
-hedgehog = tsk.Sprite(run_sheet, 300, 200)
-hedgehog.image_animation_rate = 30
-
-timer = 0
-time_up = 2000
-running = True
+sky = tsk.Sprite("SkyMountains.jpg", 0, 0)
+puffin = tsk.Sprite("PuffinFly.png", 0, 300)
 
 drawing = True
 while drawing:
@@ -25,22 +16,19 @@ while drawing:
         if event.type == pygame.QUIT:
             drawing = False
 
-    timer += c.get_time()
-    if timer > time_up:
-        timer = 0
-        time_up = random.randint(1500, 3000)
-        running = not running
+    # Move and scale puffin here
 
-        hedgehog.image_animation_rate = 30 if running else 0
-
-
-    background.draw()
-
-    # Update and draw the hedgehog
-    hedgehog.update(c.get_time())
-    hedgehog.draw()
+    puffin.center_x += 7
+    puffin.center_y -= 7
+    puffin.scale -= 0.02
 
 
 
+    if puffin.scale < 0.1:
+        drawing = False
+
+    sky.draw()
+    puffin.draw()
     pygame.display.flip()
-    c.tick(30)
+
+    pygame.time.wait(50)
